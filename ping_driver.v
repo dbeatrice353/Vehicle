@@ -37,7 +37,7 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
   assign sensor_driver = state == HIGH_SIGNAL ? 1 : 0;
 
   // distance calculation
-  assign distance = pulse_duration;//SPEED_OF_SOUND * (pulse_duration >> 1);  // distance in millimeters
+  assign distance = SPEED_OF_SOUND * (pulse_duration >> 1);  // distance in millimeters
 
   // pulse timer control
   assign pulse_timer_reset = state != MEASURE_RESPONSE;
