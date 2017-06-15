@@ -18,7 +18,7 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
   localparam LOW_SIGNAL_1_DURATION     = 16'h0005; // 5 microseconds
   localparam HIGH_SIGNAL_DURATION      = 16'h0005; // 5 microseconds
   localparam LOW_SIGNAL_2_DURATION     = 16'h0005; // 5 microseconds
-  localparam MEASURE_RESPONSE_DURATION = 16'h1761; // 5985 microseconds  (roughly the round-trip time to a point 1 meter away)
+  localparam MEASURE_RESPONSE_DURATION = 16'h4E11; // 19985 microseconds  
   // speed of sound
   localparam SPEED_OF_SOUND = 16'h0154; // 340 micrometers/microsecond (speed of sound is about 340.29 m/s)
 

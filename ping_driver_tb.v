@@ -31,7 +31,7 @@ module ping_driver_tb();
     signal = 1'b1;
     #100
     signal = 1'b0;
-    #100
+    #100 // #200000 
     $finish;
   end
 
