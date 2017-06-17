@@ -1,24 +1,21 @@
-module ping_driver_tb();
+module ping_tb();
 
   localparam WIDTH = 16;
 
-  reg clk;                    // 1 MHz clock input
+  reg clk;                    // 50 MHz clock input
   reg reset;                  // reset
   reg signal;
   wire sensor;                 // ultrasonic sensor interface
   wire [WIDTH-1:0] distance;  // the distance of the nearest object, measured in mm (if applicable)
-  wire driver_listening;
-  wire [2:0] state;
-  wire data_valid;
 
-  ping_driver #(.WIDTH(16)) DUT (
+  integer counter = 0;
+
+  ping DUT (
       .clk(clk),
       .reset(reset),
       .sensor(sensor),
       .distance(distance),
-      .data_valid(data_valid),
-      .listening(driver_listening),
-      .state(state)
+      .listening(driver_listening) // for test purposes
   );
 
   assign sensor = driver_listening ? signal : 1'bZ;
@@ -27,20 +24,27 @@ module ping_driver_tb();
     clk = 1'b0;
     reset = 1'b1;
     signal = 1'b0;
-    #10
+    #200
     reset = 1'b0;
-    #1000
+    #10000
     signal = 1'b1;
-    #100
+    #500
     signal = 1'b0;
-    #200000
-    $finish;
+    #189500
+    #9000
+    signal = 1'b1;
+    #500
+    signal = 1'b0;
+    $stop;
   end
 
   always
-    #5 clk = !clk;
+    #1 clk = !clk;
 
   always
-    #5 $display("clk: %b, rst: %b, sensor: %b, distance: %b, state: %b, data_valid: %b",clk,reset,sensor,distance,state,data_valid);
+    #2 counter = counter + 1;
+
+  //always
+  //  #1 $display("clk: %b, rst: %b, sensor: %b, distance: %b, cylces: %d",clk,reset,sensor,distance,counter);
 
 endmodule

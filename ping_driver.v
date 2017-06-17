@@ -1,4 +1,4 @@
-module ping_driver(clk, reset, sensor, distance, listening, state);
+module ping_driver(clk, reset, sensor, distance, data_valid, listening, state);
   // ultrasonic sensor driver
   localparam WIDTH = 16;
 
@@ -6,8 +6,9 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
   input reset;                  // reset
   inout sensor;                 // ultrasonic sensor interface
   output [WIDTH-1:0] distance;  // the distance of the nearest object, measured in mm (if applicable)
+  output data_valid;            // 1 if a valid distance measurment is being sent
   output listening;             // tell the testbench when to drive the sensor channel
-  output [2:0] state;
+  output [2:0] state;           // for test
 
   // FSM states
   localparam LOW_SIGNAL_1     = 3'b000;
@@ -18,7 +19,7 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
   localparam LOW_SIGNAL_1_DURATION     = 16'h0005; // 5 microseconds
   localparam HIGH_SIGNAL_DURATION      = 16'h0005; // 5 microseconds
   localparam LOW_SIGNAL_2_DURATION     = 16'h0005; // 5 microseconds
-  localparam MEASURE_RESPONSE_DURATION = 16'h4E11; // 19985 microseconds  
+  localparam MEASURE_RESPONSE_DURATION = 16'h4E11; // 19985 microseconds
   // speed of sound
   localparam SPEED_OF_SOUND = 16'h0154; // 340 micrometers/microsecond (speed of sound is about 340.29 m/s)
 
@@ -27,7 +28,7 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
 
   wire sensor_driver;
   wire pulse_timer_reset;
-  wire timer_data_valid;
+  wire data_valid;
   wire [WIDTH-1:0] pulse_duration;
   wire listening;
 
@@ -47,7 +48,7 @@ module ping_driver(clk, reset, sensor, distance, listening, state);
       .reset(reset | pulse_timer_reset),
       .signal(sensor),
       .duration(pulse_duration),
-      .data_valid(timer_data_valid)
+      .data_valid(data_valid)
   );
 
   // state machine
