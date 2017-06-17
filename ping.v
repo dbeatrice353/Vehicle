@@ -1,4 +1,4 @@
-module ping(clk,reset,sensor,distance,listening);
+module ping(clk,reset,sensor,distance,listening,state);
 
   localparam WIDTH = 16;
 
@@ -7,13 +7,16 @@ module ping(clk,reset,sensor,distance,listening);
   inout sensor;                 // sensor interface
   output [WIDTH-1:0] distance;  // last distance measurment in mm
   output listening;             // tell the testbench when to drive the bidir channel
+  output [2:0] state;
 
   wire clk_1MHz;
   wire data_valid;
   wire listening;
+  wire [WIDTH-1:0] distance_;
 
   reg [WIDTH-1:0] distance_reg;
 
+  assign distance = distance_reg;
 
   clock_divider DIVIDER (
     .clk(clk),
@@ -25,18 +28,18 @@ module ping(clk,reset,sensor,distance,listening);
       .clk(clk_1MHz),
       .reset(reset),
       .sensor(sensor),
-      .distance(distance),
+      .distance(distance_),
       .data_valid(data_valid),
       .listening(listening),
-      .state()
+      .state(state)
   );
 
   always @(posedge data_valid or posedge reset)
   begin
     if(reset)begin
-      distance_reg <= 1;
+      distance_reg <= 16'hFFFF;
     end else begin
-      distance_reg <= distance;
+      distance_reg <= distance_;
     end
   end
 

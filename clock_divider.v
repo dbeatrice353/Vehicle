@@ -16,7 +16,7 @@ module clock_divider(clk,reset,clk_out);
       clk_out = 0;
     end
     else
-    if(counter == 8'h32)begin
+    if(counter == 8'h18)begin
       counter = 8'h0;
       clk_out = !clk_out;
     end

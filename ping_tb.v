@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module ping_tb();
 
   localparam WIDTH = 16;
@@ -7,15 +9,15 @@ module ping_tb();
   reg signal;
   wire sensor;                 // ultrasonic sensor interface
   wire [WIDTH-1:0] distance;  // the distance of the nearest object, measured in mm (if applicable)
-
-  integer counter = 0;
+  wire [2:0] state;
 
   ping DUT (
       .clk(clk),
       .reset(reset),
       .sensor(sensor),
       .distance(distance),
-      .listening(driver_listening) // for test purposes
+      .listening(driver_listening), // for test purposes
+      .state(state)
   );
 
   assign sensor = driver_listening ? signal : 1'bZ;
@@ -23,28 +25,26 @@ module ping_tb();
   initial begin
     clk = 1'b0;
     reset = 1'b1;
-    signal = 1'b0;
-    #200
+    #100
     reset = 1'b0;
-    #10000
-    signal = 1'b1;
-    #500
+    // sample 1
     signal = 1'b0;
-    #189500
-    #9000
+    #3000000
     signal = 1'b1;
-    #500
+    #500000
     signal = 1'b0;
+    #16500000
+    // sample 2
+    #5000000
+    signal = 1'b1;
+    #1000000
+    signal = 1'b0;
+    #14000000
+    #100000
     $stop;
   end
 
   always
-    #1 clk = !clk;
-
-  always
-    #2 counter = counter + 1;
-
-  //always
-  //  #1 $display("clk: %b, rst: %b, sensor: %b, distance: %b, cylces: %d",clk,reset,sensor,distance,counter);
+    #10 clk = !clk; // 20 ns period / 50 MHz clock
 
 endmodule

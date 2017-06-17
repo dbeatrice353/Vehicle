@@ -23,7 +23,7 @@ module ping_driver(clk, reset, sensor, distance, data_valid, listening, state);
   // speed of sound
   localparam SPEED_OF_SOUND = 16'h0154; // 340 micrometers/microsecond (speed of sound is about 340.29 m/s)
 
-  reg [WIDTH-1:0] counter;      // a timer for the FSM states
+  reg [15:0] counter;      // a timer for the FSM states
   reg [2:0] state;
 
   wire sensor_driver;
@@ -77,7 +77,7 @@ module ping_driver(clk, reset, sensor, distance, data_valid, listening, state);
           end
         end
         MEASURE_RESPONSE: begin
-          if(counter == MEASURE_RESPONSE_DURATION)begin
+          if(counter >= MEASURE_RESPONSE_DURATION)begin
             state = LOW_SIGNAL_1;
             counter = 0;
           end
